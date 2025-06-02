@@ -1,0 +1,3 @@
+{{asset 'es-module-shims.js'}}
+$assets-es-module-shims-js
+<script> var assetsEsModuleShims = "{{asset 'es-module-shims.js'}}"; </script>

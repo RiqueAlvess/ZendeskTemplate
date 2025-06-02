@@ -1,0 +1,3 @@
+{{asset 'flash-notifications-bundle.js'}}
+$assets-flash-notifications-bundle-js
+<script> var assetsFlashNotificationsBundle = "{{asset 'flash-notifications-bundle.js'}}"; </script>
