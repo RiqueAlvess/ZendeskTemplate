@@ -1,443 +1,534 @@
-<header id="main-content" class="profile-header">
-  <div class="container">
-    <div class="profile-info">
-      <div class="avatar profile-avatar">
-        {{#if user.agent}}
-           <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" focusable="false" aria-hidden="true" viewBox="0 0 12 12" class="icon-agent" aria-label="{{t 'team_member' name=user.name}}">
-            <path fill="currentColor" d="M6 0C2.7 0 0 2.7 0 6s2.7 6 6 6 6-2.7 6-6-2.7-6-6-6zm0 2c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm2.3 7H3.7c-.3 0-.4-.3-.3-.5C3.9 7.6 4.9 7 6 7s2.1.6 2.6 1.5c.1.2 0 .5-.3.5z"/>
-          </svg>
-        {{/if}}
-        <img class="user-avatar" src="{{user.avatar_url}}" alt=""/>
-      </div>
-      <div class="basic-info">
-        <div class="community-name-and-title-badges">
-          <h1 class="name">
-            {{#if user.url}}
-              <a href="{{user.url}}" target="_zendesk_lotus" title="{{t 'open_user_in_support'}}">{{user.name}}</a>
-            {{else}}
-              {{user.name}}
-            {{/if}}
-          </h1>
-
-          <ul aria-label="{{t 'badges'}}" class="community-badge-titles">
-            {{#each (filter user.badges on="category_slug" equals="titles")}}
-              <li class="community-badge community-badge-title" title="{{description}}" aria-label="{{name}}">
-                {{name}}
-              </li>
-            {{/each}}
-          </ul>
-        </div>
-        <ul aria-label="{{t 'badges'}}" class="community-badge-achievements">
-          {{#each (slice (filter user.badges on="category_slug" equals="achievements") 0 4)}}
-            <li class="community-badge community-badge-achievement">
-              <img src="{{icon_url}}" alt="{{name}}" title="{{name}} | {{description}}" />
-            </li>
-          {{/each}}
-
-          {{#if (compare (calc user.badges.length "-" 4) ">" 0)}}
-            <li class="community-badge community-badge-achievement">
-              <a href="{{page_path "user_profile" id=user.id filter_by="badges"}}" class="community-badge-achievements-rest" aria-label="{{t 'more_awards_to' count=(calc user.badges.length "-" 4) name=user.name}}">
-                {{t 'plus_more' count=(calc user.badges.length "-" 4)}}
-              </a>
-            </li>
-          {{/if}}
-        </ul>
-      </div>
-      <div class="options">
-        {{#if private_profile}}
-          <span class="profile-private-badge">
-            {{t 'private'}}
-            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" focusable="false" viewBox="0 0 12 12" class="profile-private-icon">
-              <path fill="none" stroke="currentColor" d="M3.5 5.5V3a2.5 2.5 0 015 0v2.5"/>
-              <rect width="10" height="7" x="1" y="5" fill="currentColor" rx="1" ry="1"/>
-            </svg>
-          </span>
-        {{/if}}
-        {{actions class='user-profile-actions split-button'}}
-        <div class="community-follow">
-          {{subscribe}}
-        </div>
-      </div>
-
-      {{#if description}}
-        <p class="description">{{description}}</p>
-      {{/if}}
-
-      <ul class="profile-stats profile-stats-activity">
-        <li class="stat">
-          <span class="stat-label">{{t 'total_activity'}}</span>
-          <span class="stat-value" id="total-activity">{{total_activity}}</span>
-        </li>
-        <li class="stat">
-          <span class="stat-label">{{t 'last_activity'}}</span>
-          <span class="stat-value">
-            {{#if last_activity_at}}
-              {{date last_activity_at timeago=true}}
-            {{else}}
-              {{t 'no_activity_yet'}}
-            {{/if}}
-          </span>
-        </li>
-        <li class="stat">
-          <span class="stat-label">{{t 'member_since'}}</span>
-          <span class="stat-value">
-            {{#if member_since}}
-              {{date member_since format='medium'}}
-            {{else}}
-              {{t 'no_activity_yet'}}
-            {{/if}}
-          </span>
-        </li>
-      </ul>
-    </div>
-    <ul class="profile-stats profile-stats-counters">
-      <li class="stat">
-        <span class="stat-label">{{t 'following_users'}}</span>
-        <span class="stat-value" id="following-count">{{t 'users_count' count=following_count}}</span>
-      </li>
-      <li class="stat">
-        <span class="stat-label">{{t 'followed_by'}}</span>
-        <span class="stat-value" id="follower-count">{{t 'users_count' count=follower_count}}</span>
-      </li>
-      <li class="stat">
-        <span class="stat-label">{{t 'votes'}}</span>
-        <span class="stat-value" id="vote-count">{{vote_count}}</span>
-      </li>
-      <li class="stat">
-        <span class="stat-label">{{t 'subscriptions'}}</span>
-        <span class="stat-value" id="subscription-count">{{subscription_count}}</span>
-      </li>
-    </ul>
-  </div>
-</header>
-
-{{#if visible}}
-
-  {{#if member_since}}
-
-    <div class="profile-nav">
-      <div class="container">
-        <nav class="collapsible-nav">
-          <button type="button" class="collapsible-nav-toggle" aria-label="{{t 'toggle_navigation'}}" aria-expanded="false">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" focusable="false" viewBox="0 0 12 12" aria-hidden="true" class="collapsible-nav-toggle-icon chevron-icon">
-              <path fill="none" stroke="currentColor" stroke-linecap="round" d="M3 4.5l2.6 2.6c.2.2.5.2.7 0L9 4.5"/>
-            </svg>
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" focusable="false" viewBox="0 0 12 12" aria-hidden="true" class="collapsible-nav-toggle-icon x-icon">
-              <path stroke="currentColor" stroke-linecap="round" d="M3 9l6-6m0 6L3 3"/>
-            </svg>
-          </button>
-          <ul class="collapsible-nav-list">
-            {{#each filters}}
-              {{#if selected}}
-                <li class="current"><a href="{{url}}" aria-current="page">{{name}}</a></li>
-              {{else}}
-                <li><a href="{{url}}">{{name}}</a></li>
+<div class="bg-gray-50 min-h-screen">
+  
+  <header id="main-content" class="bg-white border-b border-gray-200">
+    <div class="max-w-6xl mx-auto px-4 py-8">
+      <div class="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-8">
+        
+        <div class="flex flex-col sm:flex-row sm:items-start gap-6 flex-1">
+          <div class="flex-shrink-0">
+            <div class="avatar profile-avatar relative">
+              {{#if user.agent}}
+                <div class="absolute -bottom-2 -right-2 w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center border-3 border-white shadow-lg">
+                  <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 12 12" aria-label="{{t 'team_member' name=user.name}}">
+                    <path d="M6 0C2.7 0 0 2.7 0 6s2.7 6 6 6 6-2.7 6-6-2.7-6-6-6zm0 2c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm2.3 7H3.7c-.3 0-.4-.3-.3-.5C3.9 7.6 4.9 7 6 7s2.1.6 2.6 1.5c.1.2 0 .5-.3.5z"/>
+                  </svg>
+                </div>
               {{/if}}
-            {{/each}}
-          </ul>
-        </nav>
-      </div>
-    </div>
-
-    {{#is current_filter.identifier 'activities'}}
-      <div class="container">
-        <section class="profile-section">
-
-          {{#if activities}}
-
-            <header class="profile-section-header">
-              <h2 class="profile-section-title">{{t 'activity_overview'}}</h2>
-              <span class="profile-section-description">{{t 'latest_activity' name=user.name}}</span>
-            </header>
-
-            <ul class="profile-activity-list">
-              {{#each activities}}
-
-                <li class="profile-activity profile-activity-{{type}}">
-                  <span aria-hidden="true" class="profile-activity-icon">
-                    {{#contains type "article"}}
-                      <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" focusable="false" viewBox="0 0 12 12">
-                        <path fill="none" stroke="currentColor" stroke-linecap="round" d="M3.5 5.5h5m-5 2h5m-5 2h5m2-6.29V11c0 .28-.22.5-.5.5H2c-.28 0-.5-.22-.5-.5V1c0-.28.22-.5.5-.5h5.79c.13 0 .26.05.35.15l2.21 2.21c.1.09.15.21.15.35zM7.5.5V3c0 .28.22.5.5.5h2.5"/>
-                      </svg>
-                    {{/contains}}
-                    {{#contains type "post"}}
-                      <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" focusable="false" viewBox="0 0 12 12">
-                        <path fill="none" stroke="currentColor" stroke-linecap="round" d="M1.5 6.5H1C.7 6.5.5 6.3.5 6V1C.5.7.7.5 1 .5h7c.3 0 .5.2.5.5v2.5m-6-1h4m-1 5h4m-4 2h4M4 5.5h7c.3 0 .5.2.5.5v5c0 .3-.2.5-.5.5H4c-.3 0-.5-.2-.5-.5V6c0-.3.2-.5.5-.5z"/>
-                      </svg>
-                    {{/contains}}
-                    {{#contains type "comment"}}
-                      <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" focusable="false" viewBox="0 0 12 12">
-                        <path fill="none" stroke="currentColor" d="M1 .5h10c.3 0 .5.2.5.5v7c0 .3-.2.5-.5.5H6l-2.6 2.6c-.3.3-.9.1-.9-.4V8.5H1C.7 8.5.5 8.3.5 8V1C.5.7.7.5 1 .5z"/>
-                      </svg>
-                    {{/contains}}
-                  </span>
-                  <header class="profile-activity-header">
-                    <img class="user-avatar" src="{{../user.avatar_url}}" alt=""/>
-                    <p class="profile-activity-description">{{label}}</p>
-                  </header>
-
-                  {{#with contribution}}
-                    <div class="profile-activity-contribution profile-contribution">
-                      <header class="profile-contribution-header">
-                        {{#isnt object_type 'comment'}}
-                          <h3 class="profile-contribution-title"><a href="{{url}}">{{title}}</a></h3>
-                        {{/isnt}}
-
-                        {{#isnt status 'none'}}
-                            <span class="status-label status-label-{{status_dasherized}}">{{status_name}}</span>
-                        {{/isnt}}
-
-                        {{#if pending}}
-                          <span class="status-label status-label-pending-moderation">{{t 'pending_approval'}}</span>
-                        {{/if}}
-
-                        {{#if official}}
-                          <span class="status-label status-label-official">{{t 'official_comment'}}</span>
-                        {{/if}}
-                      </header>
-                      <nav
-                        {{#is object_type 'article'}}aria-label='{{t 'article_location_with_title' title=title}}'{{/is}}
-                        {{#is object_type 'post'}}aria-label='{{t 'post_location_with_title' title=title}}'{{/is}}
-                        {{#is object_type 'comment'}}aria-label='{{t 'comment_location_with_author_name' author_name=author.name}}'{{/is}}
-                      >
-                        <ol class="breadcrumbs profile-contribution-breadcrumbs">
-                          {{#each path_steps}}
-                            <li><a href="{{url}}">{{name}}</a></li>
-                          {{/each}}
-                        </ol>
-                      </nav>
-
-                      <p class="profile-contribution-body">{{excerpt body characters=200}}</p>
-
-                      <div class="meta-group">
-                        {{#is object_type 'comment'}}
-                          <span class="meta-data">
-                            <a class="comment-link" href={{url}}>{{t 'view_comment'}}</a>
-                          </span>
-                        {{/is}}
-                        <span class="meta-data">{{author.name}}</span>
-                        {{#if editor}}
-                          <span class="meta-data">{{date edited_at timeago=true}}</span>
-                          <span class="meta-data">
-                            {{#is object_type 'article'}}
-                              {{t 'updated'}}
-                            {{else}}
-                              {{t 'edited'}}
-                            {{/is}}
-                          </span>
-                        {{else}}
-                          <span class="meta-data">{{date created_at timeago=true}}</span>
-                        {{/if}}
-                        {{#each stats}}
-                          <span class="meta-data">{{label}}</span>
-                        {{/each}}
-                      </div>
-                    </div>
-                  {{/with}}
-                </li>
-
-              {{/each}}
-            </ul>
-
-          {{/if}}
-
-          {{#unless activities}}
-            <span class="no-activity">{{t 'no_contributions'}}</span>
-          {{/unless}}
-
-        </section>
-      </div>
-    {{/is}}
-
-    {{#is current_filter.identifier 'badges'}}
-      <div class="container">
-        <section class="profile-section">
-
-          {{#if user.badges}}
-            <header class="profile-section-header">
-              <h2 class="profile-section-title">{{t 'badges'}}</h2>
-              <span class="profile-section-description">{{t 'badges_description' name=user.name}}</span>
-            </header>
-
-            <ul class="profile-badges-items">
-              {{#each user.badges}}
-                <li role="region" class="profile-badges-item" aria-labelledby="title-{{id}}" aria-describedby="desc-{{id}}">
-                  <div class="profile-badges-item-image">
-                    {{#if icon_url}}
-                      <img class="badge" src="{{icon_url}}" alt="">
-                    {{/if}}
-                  </div>
-                  <div>
-                    <div id="title-{{id}}" class="profile-badges-item-title">
-                      {{name}}
-                    </div>
-                    <p id="desc-{{id}}" class="profile-badges-item-description">
-                      {{description}}
-                    </p>
-                  </div>
-                  <div class="profile-badges-item-metadata">
-                    <div class="profile-badges-item-metadata-title">
-                      {{t 'badges_awarded'}}
-                    </div>
-                    <p class="profile-badges-item-metadata-description">
-                      {{date assigned_at format='medium'}}
-                    </p>
-                  </div>
-                </li>
-              {{/each}}
-            </ul>
-          {{else}}
-            <span class="no-activity">{{t 'no_badges'}}</span>
-          {{/if}}
-        </section>
-      </div>
-
-    {{/is}}
-
-    {{#isnt current_filter.identifier 'activities'}}
-      {{#isnt current_filter.identifier 'badges'}}
-        <div class="container">
-          <section class="profile-section">
-
-            {{#if contributions}}
-
-              <header class="profile-section-header">
-                <h2 class="profile-section-title">{{t current_filter.identifier}}</h2>
-                {{#if sorters}}
-                  <span class="profile-section-description">{{sorter_description}}</span>
-                  <span class="profile-section-sorter dropdown">
-                    <button class="dropdown-toggle" aria-haspopup="true">
-                      {{current_sorter.label}}
-                      <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" focusable="false" viewBox="0 0 12 12" class="dropdown-chevron-icon">
-                        <path fill="none" stroke="currentColor" stroke-linecap="round" d="M3 4.5l2.6 2.6c.2.2.5.2.7 0L9 4.5"/>
-                      </svg>
-                    </button>
-                    <span class="dropdown-menu" role="menu">
-                      {{#each sorters}}
-                        <a href="{{url}}" aria-checked="{{selected}}" role="menuitemradio">
-                          {{name}}
-                        </a>
-                      {{/each}}
-                    </span>
-                  </span>
+              <img class="w-24 h-24 rounded-full border-4 border-white shadow-xl user-avatar" src="{{user.avatar_url}}" alt=""/>
+            </div>
+          </div>
+          
+          <div class="flex-1 min-w-0 basic-info">
+            <div class="community-name-and-title-badges mb-4">
+              <h1 class="text-3xl font-bold text-gray-900 mb-3 name">
+                {{#if user.url}}
+                  <a href="{{user.url}}" target="_zendesk_lotus" title="{{t 'open_user_in_support'}}" class="hover:text-blue-600 transition-colors duration-200">{{user.name}}</a>
+                {{else}}
+                  {{user.name}}
                 {{/if}}
-              </header>
+              </h1>
 
-              <ul class="profile-contribution-list profile-{{current_filter.identifier}}">
-                {{#each contributions}}
-
-                  <li class="profile-contribution">
-                    <span class="profile-contribution-icon" aria-hidden="true">
-                      {{#is object_type "article"}}
-                        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" focusable="false" viewBox="0 0 12 12">
-                          <path fill="none" stroke="currentColor" stroke-linecap="round" d="M3.5 5.5h5m-5 2h5m-5 2h5m2-6.29V11c0 .28-.22.5-.5.5H2c-.28 0-.5-.22-.5-.5V1c0-.28.22-.5.5-.5h5.79c.13 0 .26.05.35.15l2.21 2.21c.1.09.15.21.15.35zM7.5.5V3c0 .28.22.5.5.5h2.5"/>
-                        </svg>
-                      {{/is}}
-                      {{#is object_type "post"}}
-                        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" focusable="false" viewBox="0 0 12 12">
-                          <path fill="none" stroke="currentColor" stroke-linecap="round" d="M1.5 6.5H1C.7 6.5.5 6.3.5 6V1C.5.7.7.5 1 .5h7c.3 0 .5.2.5.5v2.5m-6-1h4m-1 5h4m-4 2h4M4 5.5h7c.3 0 .5.2.5.5v5c0 .3-.2.5-.5.5H4c-.3 0-.5-.2-.5-.5V6c0-.3.2-.5.5-.5z"/>
-                        </svg>
-                      {{/is}}
-                      {{#is object_type "comment"}}
-                        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" focusable="false" viewBox="0 0 12 12">
-                          <path fill="none" stroke="currentColor" d="M1 .5h10c.3 0 .5.2.5.5v7c0 .3-.2.5-.5.5H6l-2.6 2.6c-.3.3-.9.1-.9-.4V8.5H1C.7 8.5.5 8.3.5 8V1C.5.7.7.5 1 .5z"/>
-                        </svg>
-                      {{/is}}
-                    </span>
-                    <header class="profile-contribution-header">
-                      {{#isnt object_type 'comment'}}
-                        <h3 class="profile-contribution-title"><a href="{{url}}">{{title}}</a></h3>
-                      {{/isnt}}
-
-                      {{#isnt status 'none'}}
-                          <span class="status-label status-label-{{status_dasherized}}">{{status_name}}</span>
-                      {{/isnt}}
-
-                      {{#if pending}}
-                        <span class="status-label status-label-pending-moderation">{{t 'pending_approval'}}</span>
-                      {{/if}}
-
-                      {{#if official}}
-                        <span class="status-label status-label-official">{{t 'official_comment'}}</span>
-                      {{/if}}
-                    </header>
-                    <nav
-                      {{#is object_type 'article'}}aria-label='{{t 'article_location_with_title' title=title}}'{{/is}}
-                      {{#is object_type 'post'}}aria-label='{{t 'post_location_with_title' title=title}}'{{/is}}
-                      {{#is object_type 'comment'}}aria-label='{{t 'comment_location_with_author_name' author_name=author.name}}'{{/is}}
-                    >
-                      <ol class="breadcrumbs profile-contribution-breadcrumbs">
-                        {{#each path_steps}}
-                          <li><a href="{{url}}">{{name}}</a></li>
-                        {{/each}}
-                      </ol>
-                    </nav>
-
-                    <p class="profile-contribution-body">{{excerpt body characters=200}}</p>
-
-                    <div class="meta-group">
-                      {{#is object_type 'comment'}}
-                        <span class="meta-data">
-                          <a class="comment-link" href={{url}}>{{t 'view_comment'}}</a>
-                        </span>
-                      {{/is}}
-                      <span class="meta-data">{{author.name}}</span>
-                      {{#if editor}}
-                        <span class="meta-data">{{date edited_at timeago=true}}</span>
-                        <span class="meta-data">
-                          {{#is object_type 'article'}}
-                            {{t 'updated'}}
-                          {{else}}
-                            {{t 'edited'}}
-                          {{/is}}
-                        </span>
-                      {{else}}
-                        <span class="meta-data">{{date created_at timeago=true}}</span>
-                      {{/if}}
-                      {{#each stats}}
-                        <span class="meta-data">{{label}}</span>
-                      {{/each}}
-                    </div>
+              <ul aria-label="{{t 'badges'}}" class="community-badge-titles flex flex-wrap gap-2 mb-4">
+                {{#each (filter user.badges on="category_slug" equals="titles")}}
+                  <li class="community-badge community-badge-title inline-flex items-center px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-full text-sm font-semibold shadow-md hover:shadow-lg transition-shadow duration-200" title="{{description}}" aria-label="{{name}}">
+                    <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                    </svg>
+                    {{name}}
                   </li>
-
                 {{/each}}
               </ul>
+            </div>
 
-              {{pagination}}
+            <ul aria-label="{{t 'badges'}}" class="community-badge-achievements flex items-center gap-3 mb-6">
+              {{#each (slice (filter user.badges on="category_slug" equals="achievements") 0 4)}}
+                <li class="community-badge community-badge-achievement">
+                  <div class="w-12 h-12 rounded-lg border-2 border-gray-200 p-1 bg-white shadow-md hover:shadow-lg transition-shadow duration-200">
+                    <img src="{{icon_url}}" alt="{{name}}" title="{{name}} | {{description}}" class="w-full h-full rounded object-cover" />
+                  </div>
+                </li>
+              {{/each}}
+              {{#if (compare (calc user.badges.length "-" 4) ">" 0)}}
+                <li class="community-badge community-badge-achievement">
+                  <a href="{{page_path "user_profile" id=user.id filter_by="badges"}}" class="community-badge-achievements-rest inline-flex items-center px-3 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg text-sm font-medium transition-colors duration-200" aria-label="{{t 'more_awards_to' count=(calc user.badges.length "-" 4) name=user.name}}">
+                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                    </svg>
+                    {{t 'plus_more' count=(calc user.badges.length "-" 4)}}
+                  </a>
+                </li>
+              {{/if}}
+            </ul>
 
+            {{#if description}}
+              <p class="text-gray-700 text-lg leading-relaxed description">{{description}}</p>
             {{/if}}
-
-            {{#unless contributions}}
-              <span class="no-activity">{{t 'no_contributions'}}</span>
-            {{/unless}}
-
-          </section>
+          </div>
         </div>
-      {{/isnt}}
-    {{/isnt}}
 
+        <div class="flex flex-col sm:flex-row lg:flex-col gap-4 lg:items-end options">
+          {{#if private_profile}}
+            <span class="profile-private-badge inline-flex items-center px-4 py-2 bg-amber-50 border border-amber-200 rounded-lg text-amber-800 font-medium">
+              <svg class="profile-private-icon w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+              </svg>
+              {{t 'private'}}
+            </span>
+          {{/if}}
+          
+          <div class="flex items-center gap-3">
+            {{actions class='user-profile-actions split-button'}}
+            <div class="community-follow">
+              {{subscribe}}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-8 pt-8 border-t border-gray-100">
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-4 lg:gap-6">
+          <div class="text-center profile-stats profile-stats-activity col-span-1 sm:col-span-1">
+            <div class="stat">
+              <span class="stat-value text-2xl sm:text-3xl font-bold text-gray-900 block" id="total-activity">{{total_activity}}</span>
+              <span class="stat-label text-xs sm:text-sm text-gray-500 mt-1">{{t 'total_activity'}}</span>
+            </div>
+          </div>
+          
+          <div class="text-center col-span-1 sm:col-span-1">
+            <div class="stat">
+              <span class="stat-value text-sm sm:text-lg font-semibold text-gray-900 block">
+                {{#if last_activity_at}}
+                  {{date last_activity_at timeago=true}}
+                {{else}}
+                  {{t 'no_activity_yet'}}
+                {{/if}}
+              </span>
+              <span class="stat-label text-xs sm:text-sm text-gray-500 mt-1">{{t 'last_activity'}}</span>
+            </div>
+          </div>
+          
+          <div class="text-center col-span-2 sm:col-span-1">
+            <div class="stat">
+              <span class="stat-value text-sm sm:text-lg font-semibold text-gray-900 block">
+                {{#if member_since}}
+                  {{date member_since format='medium'}}
+                {{else}}
+                  {{t 'no_activity_yet'}}
+                {{/if}}
+              </span>
+              <span class="stat-label text-xs sm:text-sm text-gray-500 mt-1">{{t 'member_since'}}</span>
+            </div>
+          </div>
+          
+          <div class="text-center profile-stats-counters col-span-1">
+            <div class="stat">
+              <span class="stat-value text-xl sm:text-2xl font-bold text-blue-600 block" id="following-count">{{following_count}}</span>
+              <span class="stat-label text-xs sm:text-sm text-gray-500 mt-1">{{t 'following_users'}}</span>
+            </div>
+          </div>
+          
+          <div class="text-center col-span-1">
+            <div class="stat">
+              <span class="stat-value text-xl sm:text-2xl font-bold text-green-600 block" id="follower-count">{{follower_count}}</span>
+              <span class="stat-label text-xs sm:text-sm text-gray-500 mt-1">{{t 'followed_by'}}</span>
+            </div>
+          </div>
+          
+          <div class="text-center col-span-1">
+            <div class="stat">
+              <span class="stat-value text-xl sm:text-2xl font-bold text-purple-600 block" id="vote-count">{{vote_count}}</span>
+              <span class="stat-label text-xs sm:text-sm text-gray-500 mt-1">{{t 'votes'}}</span>
+            </div>
+          </div>
+          
+          <div class="text-center col-span-1">
+            <div class="stat">
+              <span class="stat-value text-xl sm:text-2xl font-bold text-orange-600 block" id="subscription-count">{{subscription_count}}</span>
+              <span class="stat-label text-xs sm:text-sm text-gray-500 mt-1">{{t 'subscriptions'}}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  {{#if visible}}
+    {{#if member_since}}
+      
+      <div class="profile-nav bg-white border-b border-gray-200 sticky top-0 z-10">
+        <div class="max-w-6xl mx-auto px-4">
+          <nav class="collapsible-nav">
+            <button type="button" class="collapsible-nav-toggle md:hidden p-2 rounded-md text-gray-600 hover:bg-gray-50" aria-label="{{t 'toggle_navigation'}}" aria-expanded="false">
+              <svg class="collapsible-nav-toggle-icon chevron-icon w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+              </svg>
+              <svg class="collapsible-nav-toggle-icon x-icon w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+              </svg>
+            </button>
+            <ul class="collapsible-nav-list flex flex-col md:flex-row md:space-x-8 overflow-x-auto py-4">
+              {{#each filters}}
+                {{#if selected}}
+                  <li class="current">
+                    <a href="{{url}}" aria-current="page" class="flex-shrink-0 block py-2 md:pb-4 md:px-1 border-l-4 md:border-l-0 md:border-b-2 border-blue-500 text-blue-600 font-semibold text-sm bg-blue-50 md:bg-transparent px-4 md:px-0 whitespace-nowrap">
+                      {{name}}
+                    </a>
+                  </li>
+                {{else}}
+                  <li>
+                    <a href="{{url}}" class="flex-shrink-0 block py-2 md:pb-4 md:px-1 border-l-4 md:border-l-0 md:border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 font-medium text-sm transition-colors duration-200 px-4 md:px-0 whitespace-nowrap">
+                      {{name}}
+                    </a>
+                  </li>
+                {{/if}}
+              {{/each}}
+            </ul>
+          </nav>
+        </div>
+      </div>
+
+      <div class="max-w-6xl mx-auto px-4 py-8">
+        
+        {{#is current_filter.identifier 'activities'}}
+          <div class="container">
+            <section class="profile-section">
+              {{#if activities}}
+                <header class="profile-section-header mb-8">
+                  <h2 class="profile-section-title text-2xl font-bold text-gray-900 mb-2">{{t 'activity_overview'}}</h2>
+                  <span class="profile-section-description text-gray-600">{{t 'latest_activity' name=user.name}}</span>
+                </header>
+
+                <ul class="profile-activity-list space-y-6">
+                  {{#each activities}}
+                    <li class="profile-activity profile-activity-{{type}} bg-white rounded-xl border border-gray-200 p-6 shadow-sm hover:shadow-md transition-shadow duration-200">
+                      <div class="flex space-x-4">
+                        <span aria-hidden="true" class="profile-activity-icon flex-shrink-0">
+                          <div class="w-12 h-12 bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl flex items-center justify-center">
+                            {{#contains type "article"}}
+                              <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                              </svg>
+                            {{/contains}}
+                            {{#contains type "post"}}
+                              <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                              </svg>
+                            {{/contains}}
+                            {{#contains type "comment"}}
+                              <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10m0 0v8a2 2 0 01-2 2H9m8-10V6a2 2 0 00-2-2H9a2 2 0 00-2 2v2m0 0v8a2 2 0 002 2h2m-6-4h6m2-6h2a2 2 0 012 2v8a2 2 0 01-2 2h-2m-2-4h2m-6 0h4"></path>
+                              </svg>
+                            {{/contains}}
+                          </div>
+                        </span>
+
+                        <div class="flex-1 min-w-0">
+                          <header class="profile-activity-header flex items-center space-x-3 mb-4">
+                            <img class="user-avatar w-8 h-8 rounded-full border-2 border-white shadow-sm" src="{{../user.avatar_url}}" alt=""/>
+                            <p class="profile-activity-description text-gray-700 font-medium">{{label}}</p>
+                          </header>
+
+                          {{#with contribution}}
+                            <div class="profile-activity-contribution profile-contribution bg-gray-50 rounded-lg p-4">
+                              <header class="profile-contribution-header flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-4">
+                                {{#isnt object_type 'comment'}}
+                                  <h3 class="profile-contribution-title text-lg font-semibold text-gray-900">
+                                    <a href="{{url}}" class="hover:text-blue-600 transition-colors duration-200">{{title}}</a>
+                                  </h3>
+                                {{/isnt}}
+
+                                <div class="flex items-center space-x-2">
+                                  {{#isnt status 'none'}}
+                                    <span class="status-label status-label-{{status_dasherized}} inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">{{status_name}}</span>
+                                  {{/isnt}}
+                                  {{#if pending}}
+                                    <span class="status-label status-label-pending-moderation inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">{{t 'pending_approval'}}</span>
+                                  {{/if}}
+                                  {{#if official}}
+                                    <span class="status-label status-label-official inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">{{t 'official_comment'}}</span>
+                                  {{/if}}
+                                </div>
+                              </header>
+
+                              <nav class="mb-3" 
+                                {{#is object_type 'article'}}aria-label='{{t 'article_location_with_title' title=title}}'{{/is}}
+                                {{#is object_type 'post'}}aria-label='{{t 'post_location_with_title' title=title}}'{{/is}}
+                                {{#is object_type 'comment'}}aria-label='{{t 'comment_location_with_author_name' author_name=author.name}}'{{/is}}>
+                                <ol class="breadcrumbs profile-contribution-breadcrumbs flex items-center space-x-2 text-sm text-gray-500">
+                                  {{#each path_steps}}
+                                    <li class="flex items-center">
+                                      {{#unless @first}}
+                                        <svg class="flex-shrink-0 h-3 w-3 text-gray-400 mx-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                        </svg>
+                                      {{/unless}}
+                                      <a href="{{url}}" class="hover:text-blue-600 transition-colors duration-200">{{name}}</a>
+                                    </li>
+                                  {{/each}}
+                                </ol>
+                              </nav>
+
+                              <p class="profile-contribution-body text-gray-700 mb-4 leading-relaxed">{{excerpt body characters=200}}</p>
+
+                              <div class="meta-group flex flex-wrap items-center gap-4 text-sm text-gray-500">
+                                {{#is object_type 'comment'}}
+                                  <span class="meta-data">
+                                    <a class="comment-link text-blue-600 hover:text-blue-800 font-medium" href={{url}}>{{t 'view_comment'}}</a>
+                                  </span>
+                                {{/is}}
+                                <span class="meta-data">{{author.name}}</span>
+                                {{#if editor}}
+                                  <span class="meta-data">{{date edited_at timeago=true}}</span>
+                                  <span class="meta-data">
+                                    {{#is object_type 'article'}}{{t 'updated'}}{{else}}{{t 'edited'}}{{/is}}
+                                  </span>
+                                {{else}}
+                                  <span class="meta-data">{{date created_at timeago=true}}</span>
+                                {{/if}}
+                                {{#each stats}}
+                                  <span class="meta-data">{{label}}</span>
+                                {{/each}}
+                              </div>
+                            </div>
+                          {{/with}}
+                        </div>
+                      </div>
+                    </li>
+                  {{/each}}
+                </ul>
+
+              {{else}}
+                <div class="text-center py-16">
+                  <div class="mx-auto w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mb-6">
+                    <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                    </svg>
+                  </div>
+                  <span class="no-activity text-lg font-semibold text-gray-900 block mb-2">{{t 'no_contributions'}}</span>
+                  <p class="text-gray-600">Este usuário ainda não tem atividades registradas.</p>
+                </div>
+              {{/if}}
+            </section>
+          </div>
+        {{/is}}
+
+        {{#is current_filter.identifier 'badges'}}
+          <div class="container">
+            <section class="profile-section">
+              {{#if user.badges}}
+                <header class="profile-section-header mb-8">
+                  <h2 class="profile-section-title text-2xl font-bold text-gray-900 mb-2">{{t 'badges'}}</h2>
+                  <span class="profile-section-description text-gray-600">{{t 'badges_description' name=user.name}}</span>
+                </header>
+
+                <ul class="profile-badges-items grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {{#each user.badges}}
+                    <li role="region" class="profile-badges-item bg-white rounded-xl border border-gray-200 p-6 shadow-sm hover:shadow-md transition-shadow duration-200" aria-labelledby="title-{{id}}" aria-describedby="desc-{{id}}">
+                      <div class="flex items-start space-x-4">
+                        <div class="profile-badges-item-image flex-shrink-0">
+                          {{#if icon_url}}
+                            <img class="badge w-16 h-16 rounded-lg border-2 border-gray-100" src="{{icon_url}}" alt="">
+                          {{else}}
+                            <div class="w-16 h-16 bg-gradient-to-br from-gray-100 to-gray-200 rounded-lg flex items-center justify-center">
+                              <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path>
+                              </svg>
+                            </div>
+                          {{/if}}
+                        </div>
+                        <div class="flex-1 min-w-0">
+                          <div id="title-{{id}}" class="profile-badges-item-title text-lg font-semibold text-gray-900 mb-2">{{name}}</div>
+                          <p id="desc-{{id}}" class="profile-badges-item-description text-gray-600 text-sm mb-3 leading-relaxed">{{description}}</p>
+                          <div class="profile-badges-item-metadata">
+                            <div class="profile-badges-item-metadata-title text-xs font-medium text-gray-500 uppercase tracking-wide">{{t 'badges_awarded'}}</div>
+                            <p class="profile-badges-item-metadata-description text-sm text-gray-700 mt-1">{{date assigned_at format='medium'}}</p>
+                          </div>
+                        </div>
+                      </div>
+                    </li>
+                  {{/each}}
+                </ul>
+
+              {{else}}
+                <div class="text-center py-16">
+                  <div class="mx-auto w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mb-6">
+                    <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path>
+                    </svg>
+                  </div>
+                  <span class="no-activity text-lg font-semibold text-gray-900 block mb-2">{{t 'no_badges'}}</span>
+                  <p class="text-gray-600">Este usuário ainda não possui badges.</p>
+                </div>
+              {{/if}}
+            </section>
+          </div>
+        {{/is}}
+
+        {{#isnt current_filter.identifier 'activities'}}
+          {{#isnt current_filter.identifier 'badges'}}
+            <div class="container">
+              <section class="profile-section">
+                {{#if contributions}}
+                  <header class="profile-section-header flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-8">
+                    <div class="flex-1">
+                      <h2 class="profile-section-title text-xl sm:text-2xl font-bold text-gray-900 mb-2">{{t current_filter.identifier}}</h2>
+                      {{#if sorters}}
+                        <span class="profile-section-description text-gray-600 text-sm sm:text-base">{{sorter_description}}</span>
+                      {{/if}}
+                    </div>
+                    {{#if sorters}}
+                      <span class="profile-section-sorter dropdown relative">
+                        <button class="dropdown-toggle inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors duration-200" aria-haspopup="true">
+                          {{current_sorter.label}}
+                          <svg class="dropdown-chevron-icon ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                          </svg>
+                        </button>
+                        <span class="dropdown-menu absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-10" role="menu">
+                          {{#each sorters}}
+                            <a href="{{url}}" aria-checked="{{selected}}" role="menuitemradio" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200 {{#if selected}}bg-blue-50 text-blue-700 font-medium{{/if}}">{{name}}</a>
+                          {{/each}}
+                        </span>
+                      </span>
+                    {{/if}}
+                  </header>
+
+                  <ul class="profile-contribution-list profile-{{current_filter.identifier}} space-y-6">
+                    {{#each contributions}}
+                      <li class="profile-contribution bg-white rounded-xl border border-gray-200 p-6 shadow-sm hover:shadow-md transition-shadow duration-200">
+                        <div class="flex space-x-4">
+                          <span class="profile-contribution-icon flex-shrink-0" aria-hidden="true">
+                            <div class="w-10 h-10 bg-gradient-to-br from-gray-50 to-gray-100 rounded-lg flex items-center justify-center">
+                              {{#is object_type "article"}}
+                                <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                </svg>
+                              {{/is}}
+                              {{#is object_type "post"}}
+                                <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                                </svg>
+                              {{/is}}
+                              {{#is object_type "comment"}}
+                                <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10m0 0v8a2 2 0 01-2 2H9m8-10V6a2 2 0 00-2-2H9a2 2 0 00-2 2v2m0 0v8a2 2 0 002 2h2m-6-4h6m2-6h2a2 2 0 012 2v8a2 2 0 01-2 2h-2m-2-4h2m-6 0h4"></path>
+                                </svg>
+                              {{/is}}
+                            </div>
+                          </span>
+
+                          <div class="flex-1 min-w-0">
+                            <header class="profile-contribution-header flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-4">
+                              {{#isnt object_type 'comment'}}
+                                <h3 class="profile-contribution-title text-lg font-semibold text-gray-900">
+                                  <a href="{{url}}" class="hover:text-blue-600 transition-colors duration-200">{{title}}</a>
+                                </h3>
+                              {{/isnt}}
+
+                              <div class="flex items-center space-x-2">
+                                {{#isnt status 'none'}}
+                                  <span class="status-label status-label-{{status_dasherized}} inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">{{status_name}}</span>
+                                {{/isnt}}
+                                {{#if pending}}
+                                  <span class="status-label status-label-pending-moderation inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">{{t 'pending_approval'}}</span>
+                                {{/if}}
+                                {{#if official}}
+                                  <span class="status-label status-label-official inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">{{t 'official_comment'}}</span>
+                                {{/if}}
+                              </div>
+                            </header>
+
+                            <nav class="mb-3" 
+                              {{#is object_type 'article'}}aria-label='{{t 'article_location_with_title' title=title}}'{{/is}}
+                              {{#is object_type 'post'}}aria-label='{{t 'post_location_with_title' title=title}}'{{/is}}
+                              {{#is object_type 'comment'}}aria-label='{{t 'comment_location_with_author_name' author_name=author.name}}'{{/is}}>
+                              <ol class="breadcrumbs profile-contribution-breadcrumbs flex items-center space-x-2 text-sm text-gray-500">
+                                {{#each path_steps}}
+                                  <li class="flex items-center">
+                                    {{#unless @first}}
+                                      <svg class="flex-shrink-0 h-3 w-3 text-gray-400 mx-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                      </svg>
+                                    {{/unless}}
+                                    <a href="{{url}}" class="hover:text-blue-600 transition-colors duration-200">{{name}}</a>
+                                  </li>
+                                {{/each}}
+                              </ol>
+                            </nav>
+
+                            <p class="profile-contribution-body text-gray-700 mb-4 leading-relaxed">{{excerpt body characters=200}}</p>
+
+                            <div class="meta-group flex flex-wrap items-center gap-4 text-sm text-gray-500">
+                              {{#is object_type 'comment'}}
+                                <span class="meta-data">
+                                  <a class="comment-link text-blue-600 hover:text-blue-800 font-medium" href={{url}}>{{t 'view_comment'}}</a>
+                                </span>
+                              {{/is}}
+                              <span class="meta-data">{{author.name}}</span>
+                              {{#if editor}}
+                                <span class="meta-data">{{date edited_at timeago=true}}</span>
+                                <span class="meta-data">
+                                  {{#is object_type 'article'}}{{t 'updated'}}{{else}}{{t 'edited'}}{{/is}}
+                                </span>
+                              {{else}}
+                                <span class="meta-data">{{date created_at timeago=true}}</span>
+                              {{/if}}
+                              {{#each stats}}
+                                <span class="meta-data">{{label}}</span>
+                              {{/each}}
+                            </div>
+                          </div>
+                        </div>
+                      </li>
+                    {{/each}}
+                  </ul>
+
+                  {{pagination}}
+
+                {{else}}
+                  <div class="text-center py-16">
+                    <div class="mx-auto w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mb-6">
+                      <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                      </svg>
+                    </div>
+                    <span class="no-activity text-lg font-semibold text-gray-900 block mb-2">{{t 'no_contributions'}}</span>
+                    <p class="text-gray-600">Este usuário ainda não tem contribuições registradas.</p>
+                  </div>
+                {{/if}}
+              </section>
+            </div>
+          {{/isnt}}
+        {{/isnt}}
+
+      </div>
+
+    {{else}}
+      <div class="max-w-6xl mx-auto px-4 py-16">
+        <div class="text-center">
+          <div class="mx-auto w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mb-6">
+            <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+            </svg>
+          </div>
+          <span class="no-activity text-lg font-semibold text-gray-900 block mb-2">{{t 'no_content_yet'}}</span>
+          <p class="text-gray-600">Este usuário ainda não tem conteúdo disponível.</p>
+        </div>
+      </div>
+    {{/if}}
+
+  {{else}}
+    <div class="max-w-6xl mx-auto px-4 py-16">
+      <div class="text-center">
+        <div class="mx-auto w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mb-6">
+          <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+          </svg>
+        </div>
+        <span class="private-activity text-lg font-semibold text-gray-900 block mb-2">{{t 'private_activity'}}</span>
+        <p class="text-gray-600">Este perfil é privado e não pode ser visualizado.</p>
+      </div>
+    </div>
   {{/if}}
 
-  {{#unless member_since}}
-    <div class="container">
-      <section class="profile-section">
-        <span class="no-activity">{{t 'no_content_yet'}}</span>
-      </section>
-    </div>
-  {{/unless}}
-
-{{/if}}
-
-{{#unless visible}}
-  <div class="container">
-    <section class="profile-section">
-      <span class="private-activity">
-        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" focusable="false" viewBox="0 0 12 12" class="private-activity-icon">
-          <path fill="none" stroke="currentColor" d="M3.5 5.5V3a2.5 2.5 0 015 0v2.5"/>
-          <rect width="10" height="7" x="1" y="5" fill="currentColor" rx="1" ry="1"/>
-        </svg>
-        {{t 'private_activity'}}
-      </span>
-    </section>
-  </div>
-{{/unless}}
+</div>

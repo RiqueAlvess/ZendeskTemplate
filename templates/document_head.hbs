@@ -1,9 +1,28 @@
 <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-<!-- Make the translated search clear button label available for use in JS -->
-<!-- See buildClearSearchButton() in script.js -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          brand: '$brand_color',
+          'brand-text': '$brand_text_color',
+          'text-primary': '$text_color',
+          'bg-primary': '$background_color',
+          'link-primary': '$link_color',
+          'link-visited': '$visited_link_color',
+          'link-hover': '$hover_link_color'
+        },
+        fontFamily: {
+          'heading': '$heading_font',
+          'body': '$text_font'
+        }
+      }
+    }
+  }
+</script>
 <script type="text/javascript">window.searchClearButtonLabelLocalized = "{{t 'search_clear'}}";</script>
 <script type="text/javascript">
-  // Load ES module polyfill only for browsers that don't support ES modules
   if (!(HTMLScriptElement.supports && HTMLScriptElement.supports('importmap'))) {
     document.write('<script async src="{{asset 'es-module-shims.js'}}"><\/script>');
   }
@@ -21,9 +40,49 @@
 </script>
 <script type="module">
   import { renderFlashNotifications } from "flash-notifications";
-
   const settings = {{json settings}};
   const closeLabel = {{json (t 'close')}}
-
   renderFlashNotifications(settings, closeLabel);
+</script>
+<script>
+  // DROPDOWN FUNCTIONALITY
+  document.addEventListener('DOMContentLoaded', function() {
+    // Toggle dropdown ao clicar no botão
+    document.querySelectorAll('.dropdown .dropdown-toggle').forEach(function(btn) {
+      btn.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        const aberto = btn.getAttribute('aria-expanded') === 'true';
+        
+        // Fecha todos os outros dropdowns primeiro
+        document.querySelectorAll('.dropdown .dropdown-toggle').forEach(function(otherBtn) {
+          if (otherBtn !== btn) {
+            otherBtn.setAttribute('aria-expanded', 'false');
+          }
+        });
+        
+        // Toggle do dropdown atual
+        btn.setAttribute('aria-expanded', aberto ? 'false' : 'true');
+      });
+    });
+
+    // Fecha dropdown ao clicar fora
+    document.addEventListener('click', function(e) {
+      document.querySelectorAll('.dropdown').forEach(function(wrapper) {
+        const btn = wrapper.querySelector('.dropdown-toggle');
+        if (!wrapper.contains(e.target)) {
+          btn.setAttribute('aria-expanded', 'false');
+        }
+      });
+    });
+
+    // Fecha dropdown com ESC
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        document.querySelectorAll('.dropdown .dropdown-toggle').forEach(function(btn) {
+          btn.setAttribute('aria-expanded', 'false');
+        });
+      }
+    });
+  });
 </script>

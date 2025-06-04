@@ -1,82 +1,147 @@
-<div class="my-activities-nav">
-  <div class="container">
-    <nav class="collapsible-nav">
-      <button type="button" class="collapsible-nav-toggle" aria-label="{{t 'toggle_navigation'}}" aria-expanded="false">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" focusable="false" viewBox="0 0 12 12" aria-hidden="true" class="collapsible-nav-toggle-icon chevron-icon">
-          <path fill="none" stroke="currentColor" stroke-linecap="round" d="M3 4.5l2.6 2.6c.2.2.5.2.7 0L9 4.5"/>
-        </svg>
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" focusable="false" viewBox="0 0 12 12" aria-hidden="true" class="collapsible-nav-toggle-icon x-icon">
-          <path stroke="currentColor" stroke-linecap="round" d="M3 9l6-6m0 6L3 3"/>
-        </svg>
-      </button>
-      <ul class="collapsible-nav-list">
-        <li>{{link 'contributions'}}</li>
-        <li class="current">
-          <a href="{{page_path 'following'}}" aria-current="page">{{ t 'following' }}</a>
-        </li>
-      </ul>
-    </nav>
-  </div>
-</div>
-
-<div class="container">
-  <header class="my-activities-header">
-    <h1>{{t 'following'}}</h1>
-  </header>
-
-  <div class="my-activities-following-header">
-    <span class="dropdown">
-      <button class="dropdown-toggle" aria-haspopup="true">
-        {{current_filter.label}}
-        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" focusable="false" viewBox="0 0 12 12" class="dropdown-chevron-icon">
-          <path fill="none" stroke="currentColor" stroke-linecap="round" d="M3 4.5l2.6 2.6c.2.2.5.2.7 0L9 4.5"/>
-        </svg>
-      </button>
-      <span class="dropdown-menu" role="menu">
-        {{#each filters}}
-          <a href="{{url}}" aria-checked="{{selected}}" role="menuitemradio">
-            {{name}}
-          </a>
-        {{/each}}
-      </span>
-    </span>
+<div class="bg-gray-50 min-h-screen">
+  <div class="bg-white border-b border-gray-200 sticky top-16 z-30">
+    <div class="max-w-6xl mx-auto px-4">
+      <nav class="flex items-center space-x-6 h-14 overflow-x-auto">
+        <a href="{{page_path 'contributions'}}" class="flex-shrink-0 px-4 py-2 text-sm font-medium text-gray-600 hover:text-blue-600 hover:bg-gray-50 rounded-md transition-colors">
+          {{t 'contributions'}}
+        </a>
+        <a href="{{page_path 'following'}}" class="flex-shrink-0 px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md" aria-current="page">
+          {{t 'following'}}
+        </a>
+      </nav>
+    </div>
   </div>
 
-  <div id="main-content" class="requests">
-    {{#if subscriptions}}
-      <table class="table my-activities-table subscriptions-table">
-        <thead>
-          <tr>
-            <th>{{t 'title'}}</th>
-            <th>{{t 'type'}}</th>
-            <th>{{t 'subscription'}}</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          {{#each subscriptions}}
-            <tr>
-              <td>
-                {{#is type 'user'}}
-                  <img class="user-avatar" src="{{avatar_url}}" alt="">
-                {{/is}}
-                <a href="{{url}}" title="{{title}}" class="striped-list-title">
-                  {{excerpt title characters=60}}
+  <div class="max-w-6xl mx-auto px-4 py-8">
+    <div class="flex flex-col lg:flex-row gap-8">
+      <div class="lg:w-64 flex-shrink-0">
+        <div class="bg-white rounded-lg border border-gray-200 p-4">
+          <h3 class="text-sm font-medium text-gray-900 mb-3">Filtrar</h3>
+          <div class="dropdown relative">
+            <button class="dropdown-toggle w-full flex items-center justify-between px-3 py-2 text-sm border border-gray-300 rounded-md hover:bg-gray-50 transition-colors" aria-haspopup="true">
+              <span>{{current_filter.label}}</span>
+              <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+              </svg>
+            </button>
+            <div class="dropdown-menu absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-md shadow-lg z-10" role="menu">
+              {{#each filters}}
+                <a href="{{url}}" aria-checked="{{selected}}" role="menuitemradio" class="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors {{#if selected}}bg-blue-50 text-blue-600 font-medium{{/if}}">
+                  {{name}}
                 </a>
-              </td>
-              <td>{{name}}</td>
-              <td>{{following}}</td>
-              <td class="subscriptions-subscribe">
-                {{subscribe}}
-              </td>
-            </tr>
-          {{/each}}
-        </tbody>
-      </table>
+              {{/each}}
+            </div>
+          </div>
+        </div>
+      </div>
 
-    {{pagination}}
-    {{else}}
-      <p class="no-activities">{{t 'not_following'}}</p>
-    {{/if}}
+      <div class="flex-1 min-w-0">
+        <div class="bg-white rounded-lg border border-gray-200">
+          <div class="px-6 py-4 border-b border-gray-200">
+            <h1 class="text-xl font-semibold text-gray-900">{{t 'following'}}</h1>
+            <p class="text-sm text-gray-600 mt-1">Itens que você está seguindo</p>
+          </div>
+
+          <div id="main-content" class="requests">
+            {{#if subscriptions}}
+              <div class="overflow-x-auto">
+                <table class="w-full">
+                  <thead class="bg-gray-50 border-b border-gray-200">
+                    <tr>
+                      <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        {{t 'title'}}
+                      </th>
+                      <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden sm:table-cell">
+                        {{t 'type'}}
+                      </th>
+                      <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider hidden md:table-cell">
+                        {{t 'subscription'}}
+                      </th>
+                      <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Ações
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-gray-200">
+                    {{#each subscriptions}}
+                      <tr class="hover:bg-gray-50 transition-colors">
+                        <td class="px-6 py-4">
+                          <div class="flex items-center space-x-3">
+                            {{#is type 'user'}}
+                              <img class="w-10 h-10 rounded-full object-cover" src="{{avatar_url}}" alt="">
+                            {{else}}
+                              <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                                <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                </svg>
+                              </div>
+                            {{/is}}
+                            <div class="min-w-0 flex-1">
+                              <a href="{{url}}" class="text-sm font-medium text-gray-900 hover:text-blue-600 transition-colors line-clamp-2" title="{{title}}">
+                                {{excerpt title characters=60}}
+                              </a>
+                              <div class="mt-1 flex flex-wrap gap-2 text-xs text-gray-500 sm:hidden">
+                                <span class="inline-flex items-center px-2 py-1 bg-gray-100 rounded-md">{{name}}</span>
+                                <span class="inline-flex items-center px-2 py-1 bg-green-100 text-green-800 rounded-md">{{following}}</span>
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+                        <td class="px-6 py-4 text-sm hidden sm:table-cell">
+                          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                            {{name}}
+                          </span>
+                        </td>
+                        <td class="px-6 py-4 text-sm hidden md:table-cell">
+                          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                            <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                            </svg>
+                            {{following}}
+                          </span>
+                        </td>
+                        <td class="px-6 py-4">
+                          <div class="subscriptions-subscribe">
+                            {{subscribe}}
+                          </div>
+                        </td>
+                      </tr>
+                    {{/each}}
+                  </tbody>
+                </table>
+              </div>
+
+              <div class="px-6 py-4 border-t border-gray-200">
+                {{pagination}}
+              </div>
+            {{else}}
+              <div class="text-center py-16">
+                <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-5 5-5-5h5v-5a7.5 7.5 0 00-15 0v5h5l-5 5-5-5h5z"></path>
+                  </svg>
+                </div>
+                <h3 class="text-lg font-medium text-gray-900 mb-2">{{t 'not_following'}}</h3>
+                <p class="text-gray-600 mb-6">Você ainda não está seguindo nenhum item</p>
+                <div class="space-x-3">
+                  {{#link 'community' class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"}}
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                    </svg>
+                    Explorar Comunidade
+                  {{/link}}
+                  {{#link 'help_center' class="inline-flex items-center px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors"}}
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                    </svg>
+                    Explorar Artigos
+                  {{/link}}
+                </div>
+              </div>
+            {{/if}}
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>

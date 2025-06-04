@@ -1,7 +1,6 @@
 (function () {
     'use strict';
   
-    // Key map
     const ENTER = 13;
     const ESCAPE = 27;
   
@@ -17,25 +16,70 @@
       toggle.focus();
     }
   
-    // Navigation
-  
-    window.addEventListener("DOMContentLoaded", () => {
-      const menuButton = document.querySelector(".header .menu-button-mobile");
-      const menuList = document.querySelector("#user-nav-mobile");
-  
-      menuButton.addEventListener("click", (event) => {
-        event.stopPropagation();
-        toggleNavigation(menuButton, menuList);
+    function initializeDropdowns() {
+      document.querySelectorAll('.dropdown .dropdown-toggle').forEach(function(btn) {
+        btn.addEventListener('click', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          const aberto = btn.getAttribute('aria-expanded') === 'true';
+          
+          document.querySelectorAll('.dropdown .dropdown-toggle').forEach(function(otherBtn) {
+            if (otherBtn !== btn) {
+              otherBtn.setAttribute('aria-expanded', 'false');
+            }
+          });
+          
+          btn.setAttribute('aria-expanded', aberto ? 'false' : 'true');
+        });
       });
-  
-      menuList.addEventListener("keyup", (event) => {
-        if (event.keyCode === ESCAPE) {
-          event.stopPropagation();
-          closeNavigation(menuButton, menuList);
+
+      document.addEventListener('click', function(e) {
+        document.querySelectorAll('.dropdown').forEach(function(wrapper) {
+          const btn = wrapper.querySelector('.dropdown-toggle');
+          if (!wrapper.contains(e.target)) {
+            btn.setAttribute('aria-expanded', 'false');
+          }
+        });
+      });
+
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+          document.querySelectorAll('.dropdown .dropdown-toggle').forEach(function(btn) {
+            btn.setAttribute('aria-expanded', 'false');
+          });
         }
       });
+    }
   
-      // Toggles expanded aria to collapsible elements
+    function initializeMobileMenu() {
+      const menuButton = document.querySelector(".menu-button-mobile");
+      const menuList = document.querySelector("#user-nav-mobile");
+  
+      if (menuButton && menuList) {
+        menuButton.addEventListener("click", function(event) {
+          event.stopPropagation();
+          const isExpanded = menuList.getAttribute("aria-expanded") === "true";
+          menuList.setAttribute("aria-expanded", !isExpanded);
+          menuButton.setAttribute("aria-expanded", !isExpanded);
+        });
+
+        document.addEventListener("click", function(event) {
+          if (!menuButton.contains(event.target) && !menuList.contains(event.target)) {
+            menuList.setAttribute("aria-expanded", "false");
+            menuButton.setAttribute("aria-expanded", "false");
+          }
+        });
+
+        document.addEventListener("keydown", function(event) {
+          if (event.key === "Escape") {
+            menuList.setAttribute("aria-expanded", "false");
+            menuButton.setAttribute("aria-expanded", "false");
+          }
+        });
+      }
+    }
+
+    function initializeNavigation() {
       const collapsible = document.querySelectorAll(
         ".collapsible-nav, .collapsible-sidebar"
       );
@@ -45,37 +89,36 @@
           ".collapsible-nav-toggle, .collapsible-sidebar-toggle"
         );
   
-        element.addEventListener("click", () => {
-          toggleNavigation(toggle, element);
-        });
+        if (toggle) {
+          element.addEventListener("click", () => {
+            toggleNavigation(toggle, element);
+          });
   
-        element.addEventListener("keyup", (event) => {
-          console.log("escape");
-          if (event.keyCode === ESCAPE) {
-            closeNavigation(toggle, element);
-          }
-        });
+          element.addEventListener("keyup", (event) => {
+            if (event.keyCode === ESCAPE) {
+              closeNavigation(toggle, element);
+            }
+          });
+        }
       });
   
-      // If multibrand search has more than 5 help centers or categories collapse the list
       const multibrandFilterLists = document.querySelectorAll(
         ".multibrand-filter-list"
       );
       multibrandFilterLists.forEach((filter) => {
         if (filter.children.length > 6) {
-          // Display the show more button
           const trigger = filter.querySelector(".see-all-filters");
-          trigger.setAttribute("aria-hidden", false);
-  
-          // Add event handler for click
-          trigger.addEventListener("click", (event) => {
-            event.stopPropagation();
-            trigger.parentNode.removeChild(trigger);
-            filter.classList.remove("multibrand-filter-list--collapsed");
-          });
+          if (trigger) {
+            trigger.setAttribute("aria-hidden", false);
+            trigger.addEventListener("click", (event) => {
+              event.stopPropagation();
+              trigger.parentNode.removeChild(trigger);
+              filter.classList.remove("multibrand-filter-list--collapsed");
+            });
+          }
         }
       });
-    });
+    }
   
     const isPrintableChar = (str) => {
       return str.length === 1 && str.match(/^\S$/);
@@ -125,7 +168,6 @@
   
       dismiss: function () {
         if (!this.isExpanded) return;
-  
         this.toggle.removeAttribute("aria-expanded");
         this.menu.classList.remove("dropdown-menu-end", "dropdown-menu-top");
         this.focusedIndex = -1;
@@ -133,14 +175,12 @@
   
       open: function () {
         if (this.isExpanded) return;
-  
         this.toggle.setAttribute("aria-expanded", true);
         this.handleOverflow();
       },
   
       handleOverflow: function () {
         var rect = this.menu.getBoundingClientRect();
-  
         var overflow = {
           right: rect.left < 0 || rect.left + rect.width > window.innerWidth,
           bottom: rect.top < 0 || rect.top + rect.height > window.innerHeight,
@@ -161,7 +201,6 @@
   
       focusByIndex: function (index) {
         if (!this.menuItems.length) return;
-  
         this.menuItems.forEach((item, itemIndex) => {
           if (itemIndex === index) {
             item.tabIndex = 0;
@@ -170,7 +209,6 @@
             item.tabIndex = -1;
           }
         });
-  
         this.focusedIndex = index;
       },
   
@@ -184,41 +222,30 @@
   
       focusNextMenuItem: function (currentItem) {
         if (!this.menuItems.length) return;
-  
         const currentIndex = this.menuItems.indexOf(currentItem);
         const nextIndex = (currentIndex + 1) % this.menuItems.length;
-  
         this.focusByIndex(nextIndex);
       },
   
       focusPreviousMenuItem: function (currentItem) {
         if (!this.menuItems.length) return;
-  
         const currentIndex = this.menuItems.indexOf(currentItem);
         const previousIndex =
           currentIndex <= 0 ? this.menuItems.length - 1 : currentIndex - 1;
-  
         this.focusByIndex(previousIndex);
       },
   
       focusByChar: function (currentItem, char) {
         char = char.toLowerCase();
-  
         const itemChars = this.menuItems.map((menuItem) =>
           menuItem.textContent.trim()[0].toLowerCase()
         );
-  
         const startIndex =
           (this.menuItems.indexOf(currentItem) + 1) % this.menuItems.length;
-  
-        // look up starting from current index
         let index = itemChars.indexOf(char, startIndex);
-  
-        // if not found, start from start
         if (index === -1) {
           index = itemChars.indexOf(char, 0);
         }
-  
         if (index > -1) {
           this.focusByIndex(index);
         }
@@ -238,7 +265,6 @@
       clickHandler: function (event) {
         event.stopPropagation();
         event.preventDefault();
-  
         if (this.isExpanded) {
           this.dismiss();
           this.toggle.focus();
@@ -250,7 +276,6 @@
   
       toggleKeyHandler: function (e) {
         const key = e.key;
-  
         switch (key) {
           case "Enter":
           case " ":
@@ -258,7 +283,6 @@
           case "Down": {
             e.stopPropagation();
             e.preventDefault();
-  
             this.open();
             this.focusFirstMenuItem();
             break;
@@ -267,7 +291,6 @@
           case "Up": {
             e.stopPropagation();
             e.preventDefault();
-  
             this.open();
             this.focusLastMenuItem();
             break;
@@ -276,7 +299,6 @@
           case "Escape": {
             e.stopPropagation();
             e.preventDefault();
-  
             this.dismiss();
             this.toggle.focus();
             break;
@@ -287,17 +309,14 @@
       menuKeyHandler: function (e) {
         const key = e.key;
         const currentElement = this.menuItems[this.focusedIndex];
-  
         if (e.ctrlKey || e.altKey || e.metaKey) {
           return;
         }
-  
         switch (key) {
           case "Esc":
           case "Escape": {
             e.stopPropagation();
             e.preventDefault();
-  
             this.dismiss();
             this.toggle.focus();
             break;
@@ -306,7 +325,6 @@
           case "Down": {
             e.stopPropagation();
             e.preventDefault();
-  
             this.focusNextMenuItem(currentElement);
             break;
           }
@@ -353,23 +371,18 @@
       },
     };
   
-    // Drodowns
-  
-    window.addEventListener("DOMContentLoaded", () => {
+    function initializeZendeskDropdowns() {
       const dropdowns = [];
       const dropdownToggles = document.querySelectorAll(".dropdown-toggle");
-  
       dropdownToggles.forEach((toggle) => {
         const menu = toggle.nextElementSibling;
         if (menu && menu.classList.contains("dropdown-menu")) {
           dropdowns.push(new Dropdown(toggle, menu));
         }
       });
-    });
+    }
   
-    // Share
-  
-    window.addEventListener("DOMContentLoaded", () => {
+    function initializeShare() {
       const links = document.querySelectorAll(".share a");
       links.forEach((anchor) => {
         anchor.addEventListener("click", (event) => {
@@ -377,10 +390,8 @@
           window.open(anchor.href, "", "height = 500, width = 500");
         });
       });
-    });
+    }
   
-    // Vanilla JS debounce function, by Josh W. Comeau:
-    // https://www.joshwcomeau.com/snippets/javascript/debounce/
     function debounce(callback, wait) {
       let timeoutId = null;
       return (...args) => {
@@ -391,11 +402,9 @@
       };
     }
   
-    // Define variables for search field
     let searchFormFilledClassName = "search-has-value";
     let searchFormSelector = "form[role='search']";
   
-    // Clear the search input, and then return focus to it
     function clearSearchInput(event) {
       event.target
         .closest(searchFormSelector)
@@ -413,9 +422,6 @@
       input.focus();
     }
   
-    // Have the search input and clear button respond
-    // when someone presses the escape key, per:
-    // https://twitter.com/adambsilver/status/1152452833234554880
     function clearSearchInputOnKeypress(event) {
       const searchInputDeleteKeys = ["Delete", "Escape"];
       if (searchInputDeleteKeys.includes(event.key)) {
@@ -423,11 +429,6 @@
       }
     }
   
-    // Create an HTML button that all users -- especially keyboard users --
-    // can interact with, to clear the search input.
-    // To learn more about this, see:
-    // https://adrianroselli.com/2019/07/ignore-typesearch.html#Delete
-    // https://www.scottohara.me/blog/2022/02/19/custom-clear-buttons.html
     function buildClearSearchButton(inputId) {
       const button = document.createElement("button");
       button.setAttribute("type", "button");
@@ -441,7 +442,6 @@
       return button;
     }
   
-    // Append the clear button to the search form
     function appendClearSearchButton(input, form) {
       const searchClearButton = buildClearSearchButton(input.id);
       form.append(searchClearButton);
@@ -450,9 +450,6 @@
       }
     }
   
-    // Add a class to the search form when the input has a value;
-    // Remove that class from the search form when the input doesn't have a value.
-    // Do this on a delay, rather than on every keystroke.
     const toggleClearSearchButtonAvailability = debounce((event) => {
       const form = event.target.closest(searchFormSelector);
       form.classList.toggle(
@@ -461,20 +458,19 @@
       );
     }, 200);
   
-    // Search
-  
-    window.addEventListener("DOMContentLoaded", () => {
-      // Set up clear functionality for the search field
+    function initializeSearch() {
       const searchForms = [...document.querySelectorAll(searchFormSelector)];
       const searchInputs = searchForms.map((form) =>
         form.querySelector("input[type='search']")
       );
       searchInputs.forEach((input) => {
-        appendClearSearchButton(input, input.closest(searchFormSelector));
-        input.addEventListener("keyup", clearSearchInputOnKeypress);
-        input.addEventListener("keyup", toggleClearSearchButtonAvailability);
+        if (input) {
+          appendClearSearchButton(input, input.closest(searchFormSelector));
+          input.addEventListener("keyup", clearSearchInputOnKeypress);
+          input.addEventListener("keyup", toggleClearSearchButtonAvailability);
+        }
       });
-    });
+    }
   
     const key = "returnFocusTo";
   
@@ -492,13 +488,9 @@
       }
     }
   
-    // Forms
-  
-    window.addEventListener("DOMContentLoaded", () => {
-      // In some cases we should preserve focus after page reload
+    function initializeForms() {
       returnFocus();
   
-      // show form controls when the textarea receives focus or back button is used and value exists
       const commentContainerTextarea = document.querySelector(
         ".comment-container textarea"
       );
@@ -523,7 +515,6 @@
         }
       }
   
-      // Expand Request comment form when Add to conversation is clicked
       const showRequestCommentContainerTrigger = document.querySelector(
         ".request-container .comment-container .comment-show-container"
       );
@@ -548,7 +539,6 @@
         });
       }
   
-      // Mark as solved button
       const requestMarkAsSolvedButton = document.querySelector(
         ".request-container .mark-as-solved:not([data-disabled])"
       );
@@ -568,7 +558,6 @@
         });
       }
   
-      // Change Mark as solved text according to whether comment is filled
       const requestCommentTextarea = document.querySelector(
         ".request-container .comment-container textarea"
       );
@@ -619,7 +608,6 @@
         });
       });
   
-      // Submit requests filter form on search in the request list page
       const quickSearch = document.querySelector("#quick-search");
       if (quickSearch) {
         quickSearch.addEventListener("keyup", (event) => {
@@ -631,7 +619,6 @@
         });
       }
   
-      // Submit organization form in the request page
       const requestOrganisationSelect = document.querySelector(
         "#request-organization select"
       );
@@ -642,12 +629,10 @@
         });
   
         requestOrganisationSelect.addEventListener("click", (e) => {
-          // Prevents Ticket details collapsible-sidebar to close on mobile
           e.stopPropagation();
         });
       }
   
-      // If there are any error notifications below an input field, focus that field
       const notificationElm = document.querySelector(".notification-error");
       if (
         notificationElm &&
@@ -656,7 +641,16 @@
       ) {
         notificationElm.previousElementSibling.focus();
       }
+    }
+
+    window.addEventListener("DOMContentLoaded", () => {
+      initializeMobileMenu();
+      initializeDropdowns();
+      initializeNavigation();
+      initializeZendeskDropdowns();
+      initializeShare();
+      initializeSearch();
+      initializeForms();
     });
   
   })();
-  

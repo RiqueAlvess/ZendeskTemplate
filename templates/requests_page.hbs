@@ -1,140 +1,173 @@
-<div class="container">
-  {{#if settings.request_list_beta}}
-    <header class="my-activities-header">
-      <h1>{{t 'requests'}}</h1>
-    </header>
-
-    <div id="main-content">
-      {{request_list}}
-    </div>
-  {{else}}
-    <header class="my-activities-header">
-      <h1>{{t 'my_requests'}}</h1>
-
-      <div class="my-activities-sub-nav">
-        <nav class="collapsible-nav collapsible-nav-border">
-          <button type="button" class="collapsible-nav-toggle" aria-label="{{t 'toggle_navigation'}}" aria-expanded="false">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" focusable="false" viewBox="0 0 12 12" aria-hidden="true" class="collapsible-nav-toggle-icon chevron-icon">
-              <path fill="none" stroke="currentColor" stroke-linecap="round" d="M3 4.5l2.6 2.6c.2.2.5.2.7 0L9 4.5"/>
-            </svg>
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" focusable="false" viewBox="0 0 12 12" aria-hidden="true" class="collapsible-nav-toggle-icon x-icon">
-              <path stroke="currentColor" stroke-linecap="round" d="M3 9l6-6m0 6L3 3"/>
-            </svg>
-          </button>
-          <ul class="collapsible-nav-list">
-            {{#each filters}}
-              {{#if selected}}
-                <li class="current">
-                  <a href="{{url}}" aria-current="page">{{name}}</a>
-                </li>
-              {{else}}
-                <li><a href="{{url}}">{{name}}</a></li>
-              {{/if}}
-            {{/each}}
-          </ul>
-        </nav>
-      </div>
-    </header>
-
-    {{#form 'requests_filter' id="main-content" class='requests-table-toolbar hbs-form'}}
-      <div class="search">
-        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" focusable="false" viewBox="0 0 12 12" class="search-icon" aria-hidden="true">
-          <circle cx="4.5" cy="4.5" r="4" fill="none" stroke="currentColor"/>
-          <path stroke="currentColor" stroke-linecap="round" d="M11 11L7.5 7.5"/>
-        </svg>
-        {{label 'query' for='quick-search' class='visibility-hidden'}}
-        {{input 'query' id='quick-search' type='search' class='requests-search'}}
-      </div>
-      {{#if help_center.multiple_organizations_enabled}}
-        <div class="request-table-filter">
-          {{label 'organization' for='request-organization-select' class='request-filter request-filter-label'}}
-          {{select 'organization' id='request-organization-select' class='request-filter'}}
+<div class="bg-gray-50 min-h-screen">
+  <div class="max-w-6xl mx-auto px-4 py-8">
+    
+    {{#if settings.request_list_beta}}
+      <div class="bg-white rounded-lg border border-gray-200 shadow-sm">
+        <div class="p-6 border-b border-gray-200">
+          <h1 class="text-2xl font-semibold text-gray-900">{{t 'requests'}}</h1>
         </div>
-      {{/if}}
-
-      <div class="request-table-filter organization-subscribe">
-        {{subscribe}}
-      </div>
-
-      <div class="request-table-filter">
-        {{label 'status' for='request-status-select' class='request-filter request-filter-label'}}
-        {{select 'status' id='request-status-select' class='request-filter'}}
-      </div>
-    {{/form}}
-
-    {{#if query}}
-      <div class="requests-search-info meta-data">
-        {{t 'requests_search_results_info' count=requests.length query=query}}
+        <div id="main-content" class="p-6">
+          {{request_list}}
+        </div>
       </div>
     {{else}}
-      {{#unless requests}}
-        <p class="no-activities">{{t 'no_requests'}}</p>
-      {{/unless}}
-    {{/if}}
-
-    <div class="requests">
-      {{#if requests}}
-        <table class="table my-activities-table requests-table {{current_filter.identifier}}-requests">
-          <thead>
-            <tr>
-              <th>{{t 'subject'}}</th>
-              <th>{{t 'id'}}</th>
-              <th>
-                {{#is current_filter.identifier 'my'}}
-                  {{#link 'requests' sort_by='created_at'}}{{t 'created'}}{{/link}}
+      <div class="mb-6">
+        <nav class="bg-white rounded-lg border border-gray-200 p-4">
+          <div class="flex flex-col md:flex-row justify-between items-start md:items-center space-y-4 md:space-y-0">
+            <h1 class="text-2xl font-semibold text-gray-900">{{t 'my_requests'}}</h1>
+            
+            <div class="flex flex-wrap gap-2">
+              {{#each filters}}
+                {{#if selected}}
+                  <span class="px-3 py-2 bg-blue-100 text-blue-800 rounded-md text-sm font-medium">{{name}}</span>
                 {{else}}
-                  {{t 'requester'}}
-                {{/is}}
-              </th>
-              <th>{{#link 'requests' sort_by='updated_at'}}{{t 'last_activity'}}{{/link}}</th>
-              <th>
-                {{t 'status'}}
-              </th>
-            </tr>
-          </thead>
+                  <a href="{{url}}" class="px-3 py-2 bg-gray-100 text-gray-700 hover:bg-gray-200 rounded-md text-sm font-medium transition-colors">{{name}}</a>
+                {{/if}}
+              {{/each}}
+            </div>
+          </div>
+        </nav>
+      </div>
 
-          <tbody>
+      {{#form 'requests_filter' id="main-content" class='bg-white rounded-lg border border-gray-200 p-6 mb-6 hbs-form'}}
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div class="md:col-span-2">
+            <div class="relative">
+              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                </svg>
+              </div>
+              {{label 'query' for='quick-search' class='sr-only'}}
+              {{input 'query' id='quick-search' type='search' class='block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500' placeholder='Pesquisar solicitações...'}}
+            </div>
+          </div>
+          
+          {{#if help_center.multiple_organizations_enabled}}
+            <div>
+              {{label 'organization' for='request-organization-select' class='block text-sm font-medium text-gray-700 mb-1'}}
+              {{select 'organization' id='request-organization-select' class='block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500'}}
+            </div>
+          {{/if}}
+
+          <div class="organization-subscribe">
+            {{subscribe}}
+          </div>
+
+          <div>
+            {{label 'status' for='request-status-select' class='block text-sm font-medium text-gray-700 mb-1'}}
+            {{select 'status' id='request-status-select' class='block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500'}}
+          </div>
+        </div>
+      {{/form}}
+
+      {{#if query}}
+        <div class="mb-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
+          <p class="text-sm text-blue-800">
+            {{t 'requests_search_results_info' count=requests.length query=query}}
+          </p>
+        </div>
+      {{else}}
+        {{#unless requests}}
+          <div class="text-center py-12">
+            <div class="w-24 h-24 mx-auto mb-4 bg-gray-100 rounded-full flex items-center justify-center">
+              <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+              </svg>
+            </div>
+            <h3 class="text-lg font-medium text-gray-900 mb-2">{{t 'no_requests'}}</h3>
+            <p class="text-gray-600">Você ainda não tem solicitações.</p>
+          </div>
+        {{/unless}}
+      {{/if}}
+
+      {{#if requests}}
+        <div class="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
+          <div class="hidden md:block">
+            <div class="bg-gray-50 px-6 py-3 border-b border-gray-200">
+              <div class="grid grid-cols-5 gap-4 text-sm font-medium text-gray-700">
+                <div>{{t 'subject'}}</div>
+                <div>{{t 'id'}}</div>
+                <div>
+                  {{#is current_filter.identifier 'my'}}
+                    {{#link 'requests' sort_by='created_at' class="hover:text-blue-600"}}{{t 'created'}}{{/link}}
+                  {{else}}
+                    {{t 'requester'}}
+                  {{/is}}
+                </div>
+                <div>{{#link 'requests' sort_by='updated_at' class="hover:text-blue-600"}}{{t 'last_activity'}}{{/link}}</div>
+                <div>{{t 'status'}}</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="divide-y divide-gray-200">
             {{#each requests}}
-              <tr {{#is status 'closed'}} class="request-closed" {{/is}}>
-                <td class="request-info requests-table-info">
-                  <a href="{{url}}" class="striped-list-title" title="{{subject}}">
-                    {{#if subject}}
-                      {{subject}}
+              <div class="px-6 py-4 hover:bg-gray-50 transition-colors {{#is status 'closed'}}opacity-75{{/is}}">
+                <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+                  <div class="md:col-span-1">
+                    <a href="{{url}}" class="block">
+                      <h3 class="text-sm font-medium text-gray-900 hover:text-blue-600 transition-colors line-clamp-2">
+                        {{#if subject}}
+                          {{subject}}
+                        {{else}}
+                          {{excerpt description characters=50}}
+                        {{/if}}
+                      </h3>
+                      <div class="mt-2 md:hidden space-y-1">
+                        <div class="flex items-center space-x-2 text-xs text-gray-500">
+                          <span class="bg-gray-100 px-2 py-1 rounded">#{{id}}</span>
+                          <span>{{date created_at timeago=true}}</span>
+                        </div>
+                        <div>
+                          <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium
+                            {{#is status 'open'}}bg-red-100 text-red-800{{/is}}
+                            {{#is status 'pending'}}bg-yellow-100 text-yellow-800{{/is}}
+                            {{#is status 'solved'}}bg-green-100 text-green-800{{/is}}
+                            {{#is status 'closed'}}bg-gray-100 text-gray-800{{/is}}
+                            {{#is status 'new'}}bg-blue-100 text-blue-800{{/is}}">
+                            {{status_name}}
+                          </span>
+                        </div>
+                      </div>
+                    </a>
+                  </div>
+                  
+                  <div class="hidden md:block text-sm text-gray-600">
+                    <span class="bg-gray-100 px-2 py-1 rounded text-xs font-mono">#{{id}}</span>
+                  </div>
+                  
+                  <div class="hidden md:block text-sm text-gray-600">
+                    {{#is ../current_filter.identifier 'my'}}
+                      {{date created_at timeago=true}}
                     {{else}}
-                      {{excerpt description characters=50}}
-                    {{/if}}
-                  </a>
-
-                  <!-- Visible on mobile -->
-                  <div class="requests-table-meta">
-                    <span class="meta-data">#{{id}}</span>
-                    <span class="meta-data">{{date created_at timeago=true}}</span>
-                    <span class="status-label status-label-request status-label-{{status}}" title="{{status_description}}">
+                      {{requester.name}}
+                    {{/is}}
+                  </div>
+                  
+                  <div class="hidden md:block text-sm text-gray-600">
+                    {{date updated_at timeago=true}}
+                  </div>
+                  
+                  <div class="hidden md:block">
+                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium
+                      {{#is status 'open'}}bg-red-100 text-red-800{{/is}}
+                      {{#is status 'pending'}}bg-yellow-100 text-yellow-800{{/is}}
+                      {{#is status 'solved'}}bg-green-100 text-green-800{{/is}}
+                      {{#is status 'closed'}}bg-gray-100 text-gray-800{{/is}}
+                      {{#is status 'new'}}bg-blue-100 text-blue-800{{/is}}"
+                      title="{{status_description}}">
                       {{status_name}}
                     </span>
                   </div>
-                </td>
-                <td>#{{id}}</td>
-                <td>
-                  {{#is ../current_filter.identifier 'my'}}
-                    {{date created_at timeago=true}}
-                  {{else}}
-                    {{requester.name}}
-                  {{/is}}
-                </td>
-                <td>{{date updated_at timeago=true}}</td>
-                <td class="requests-table-status">
-                  <span class="status-label status-label-request status-label-{{status}}" title="{{status_description}}">
-                    {{status_name}}
-                  </span>
-                </td>
-              </tr>
+                </div>
+              </div>
             {{/each}}
-          </tbody>
-        </table>
+          </div>
+        </div>
       {{/if}}
-    </div>
 
-    {{pagination}}
-  {{/if}}
+      {{pagination}}
+    {{/if}}
+  </div>
 </div>

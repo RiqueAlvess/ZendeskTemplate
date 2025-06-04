@@ -1,83 +1,260 @@
-<h1 class="visibility-hidden">{{ help_center.name }}</h1>
+<h1 class="sr-only">{{ help_center.name }}</h1>
 
-<section id="main-content" class="section hero">
-  <div class="hero-inner">
-    <h2 class="visibility-hidden">{{ t 'search' }}</h2>
-    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" focusable="false" viewBox="0 0 12 12" class="search-icon" aria-hidden="true">
-      <circle cx="4.5" cy="4.5" r="4" fill="none" stroke="currentColor"/>
-      <path stroke="currentColor" stroke-linecap="round" d="M11 11L7.5 7.5"/>
-    </svg>
-    {{search submit=false instant=settings.instant_search class='search search-full'}}
+<!-- Hero Section -->
+<section class="relative bg-gradient-to-br from-gray-50 to-blue-50 py-20 overflow-hidden">
+  <!-- Background Image -->
+  <div class="absolute inset-0 z-0">
+    <img src="https://img.freepik.com/free-vector/customers-earning-money-by-giving-likes_74855-7121.jpg" alt="Background" class="w-full h-full object-cover opacity-100" />
+    <div class="absolute inset-0 bg-gradient-to-br from-gray-50/90 to-blue-50/90"></div>
+  </div>
+  
+ 
+  <div class="relative z-10 max-w-5xl mx-auto px-4 text-center">
+    <div class="mb-8">
+      <span class="inline-flex items-center px-4 py-2 bg-blue-100 text-blue-800 rounded-full text-sm font-medium mb-6">
+        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+        </svg>
+        Centro de Ajuda
+      </span>
+    </div>
+    
+    <h2 class="text-4xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">
+      Como podemos
+      <span class="text-blue-600">ajudar você</span>
+      hoje?
+    </h2>
+    
+    <p class="text-xl text-gray-600 mb-10 max-w-3xl mx-auto leading-relaxed">
+      Encontre respostas instantâneas, conecte-se com nossa comunidade ou fale diretamente com nosso suporte especializado
+    </p>
+    
+    <!-- Enhanced Search -->
+    <div class="max-w-2xl mx-auto mb-8">
+      <div class="relative bg-white border-2 border-gray-200 rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 focus-within:border-blue-500 focus-within:shadow-xl">
+        <div class="flex items-center">
+          <div class="pl-6 pr-3">
+            <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+            </svg>
+          </div>
+          <div class="flex-1">
+            {{search submit=false instant=settings.instant_search class='search w-full border-0 py-5 px-3 text-lg focus:outline-none focus:ring-0 bg-transparent placeholder-gray-500'}}
+          </div>
+        </div>
+      </div>
+      <p class="text-sm text-gray-500 mt-3">
+        Pesquise por palavras-chave ou descreva seu problema
+      </p>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-4xl mx-auto">
+      {{#link 'community' class="group bg-white/80 backdrop-blur-sm border border-gray-200 rounded-xl p-6 hover:bg-white hover:shadow-lg transition-all duration-300"}}
+        <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mb-4 mx-auto group-hover:bg-blue-600 group-hover:scale-110 transition-all duration-300">
+          <svg class="w-6 h-6 text-blue-600 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+          </svg>
+        </div>
+        <h3 class="font-semibold text-gray-900 mb-2">Comunidade</h3>
+        <p class="text-sm text-gray-600">Conecte-se com outros usuários</p>
+      {{/link}}
+      
+      {{#link 'new_request' class="group bg-white/80 backdrop-blur-sm border border-gray-200 rounded-xl p-6 hover:bg-white hover:shadow-lg transition-all duration-300"}}
+        <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center mb-4 mx-auto group-hover:bg-green-600 group-hover:scale-110 transition-all duration-300">
+          <svg class="w-6 h-6 text-green-600 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+          </svg>
+        </div>
+        <h3 class="font-semibold text-gray-900 mb-2">Nova Solicitação</h3>
+        <p class="text-sm text-gray-600">Fale diretamente conosco</p>
+      {{/link}}
+      
+      <div class="group bg-white/80 backdrop-blur-sm border border-gray-200 rounded-xl p-6 hover:bg-white hover:shadow-lg transition-all duration-300">
+        <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mb-4 mx-auto group-hover:bg-purple-600 group-hover:scale-110 transition-all duration-300">
+          <svg class="w-6 h-6 text-purple-600 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+        </div>
+        <h3 class="font-semibold text-gray-900 mb-2">Suporte 24/7</h3>
+        <p class="text-sm text-gray-600">Ajuda sempre disponível</p>
+      </div>
+    </div>
   </div>
 </section>
 
-<div class="container">
-  <section class="section knowledge-base">
-    <h2 class="visibility-hidden">{{ t 'categories' }}</h2>
-    <section class="categories blocks">
-      <ul class="blocks-list">
-        {{#each categories}}
-          {{#if ../has_multiple_categories}}
-            <li class="blocks-item">
-              <a href='{{url}}' class="blocks-item-link">
-                <span class="blocks-item-title">{{name}}</span>
-                <span class="blocks-item-description">{{excerpt description}}</span>
+<!-- Stats Section -->
+<section class="py-16 bg-white">
+  <div class="max-w-6xl mx-auto px-4">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+      <div class="group">
+        <div class="text-3xl md:text-4xl font-bold text-blue-600 mb-2 group-hover:scale-110 transition-transform">24h</div>
+        <div class="text-sm text-gray-600">Tempo médio de resposta</div>
+      </div>
+      <div class="group">
+        <div class="text-3xl md:text-4xl font-bold text-green-600 mb-2 group-hover:scale-110 transition-transform">99%</div>
+        <div class="text-sm text-gray-600">Taxa de satisfação</div>
+      </div>
+      <div class="group">
+        <div class="text-3xl md:text-4xl font-bold text-purple-600 mb-2 group-hover:scale-110 transition-transform">1000+</div>
+        <div class="text-sm text-gray-600">Artigos disponíveis</div>
+      </div>
+      <div class="group">
+        <div class="text-3xl md:text-4xl font-bold text-orange-600 mb-2 group-hover:scale-110 transition-transform">24/7</div>
+        <div class="text-sm text-gray-600">Suporte disponível</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Categories -->
+<section class="py-20 bg-gray-50">
+  <div class="max-w-6xl mx-auto px-4">
+    <div class="text-center mb-16">
+      <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Explore por categoria</h2>
+      <p class="text-lg text-gray-600">Encontre rapidamente a ajuda que você precisa</p>
+    </div>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      {{#each categories}}
+        {{#if ../has_multiple_categories}}
+          <div class="group bg-white rounded-2xl border border-gray-200 p-8 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+            <a href='{{url}}' class="block">
+              <div class="w-16 h-16 bg-gradient-to-br from-blue-100 to-blue-200 rounded-2xl flex items-center justify-center mb-6 group-hover:from-blue-500 group-hover:to-blue-600 transition-all duration-300">
+                <svg class="w-8 h-8 text-blue-600 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                </svg>
+              </div>
+              <h3 class="text-xl font-bold text-gray-900 mb-3 group-hover:text-blue-600 transition-colors">{{name}}</h3>
+              <p class="text-gray-600 leading-relaxed mb-4">{{excerpt description}}</p>
+              <div class="flex items-center text-blue-600 font-medium group-hover:translate-x-2 transition-transform">
+                <span>Explorar</span>
+                <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                </svg>
+              </div>
+            </a>
+          </div>
+        {{else}}
+          {{#each sections}}
+            <div class="group bg-white rounded-2xl border border-gray-200 p-8 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+              <a href='{{url}}' class="block">
+                <div class="w-16 h-16 bg-gradient-to-br from-green-100 to-green-200 rounded-2xl flex items-center justify-center mb-6 group-hover:from-green-500 group-hover:to-green-600 transition-all duration-300">
+                  <svg class="w-8 h-8 text-green-600 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                  </svg>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-3 group-hover:text-green-600 transition-colors">{{name}}</h3>
+                <p class="text-gray-600 leading-relaxed mb-4">{{excerpt description}}</p>
+                <div class="flex items-center text-green-600 font-medium group-hover:translate-x-2 transition-transform">
+                  <span>Explorar</span>
+                  <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                  </svg>
+                </div>
               </a>
-            </li>
-          {{else}}
-            {{#each sections}}
-              <li class="blocks-item">
-                <a href='{{url}}' class="blocks-item-link">
-                  <span class="blocks-item-title">
-                    {{name}}
-                  </span>
-                  <span class="blocks-item-description">{{excerpt description}}</span>
-                </a>
-              </li>
-            {{/each}}
-          {{/if}}
-        {{/each}}
-      </ul>
-      {{pagination}}
-    </section>
-
-    {{#if promoted_articles}}
-      <section class="articles">
-        <h2>{{t 'promoted_articles'}}</h2>
-        <ul class="article-list promoted-articles">
-          {{#each promoted_articles}}
-            <li class="promoted-articles-item">
-                <a href="{{url}}">
-                  {{title}}
-
-                  {{#if internal}}
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" focusable="false" viewBox="0 0 16 16" class="icon-lock" title="{{t 'internal'}}">
-                      <rect width="12" height="9" x="2" y="7" fill="currentColor" rx="1" ry="1"/>
-                      <path fill="none" stroke="currentColor" d="M4.5 7.5V4a3.5 3.5 0 017 0v3.5"/>
-                    </svg>
-                  {{/if}}
-                </a>
-            </li>
+            </div>
           {{/each}}
-        </ul>
-      </section>
-    {{/if}}
-  </section>
+        {{/if}}
+      {{/each}}
+    </div>
+    {{pagination}}
+  </div>
+</section>
 
-  {{#if help_center.community_enabled}}
-    <section class="section home-section community">
-      <h2>{{t 'community'}}</h2>
-      {{#link 'community' class='community-link'}}
-        {{t 'join_conversation'}}
-      {{/link}}
+{{#if promoted_articles}}
+<!-- Promoted Articles -->
+<section class="py-20 bg-white">
+  <div class="max-w-6xl mx-auto px-4">
+    <div class="text-center mb-16">
+      <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">{{t 'promoted_articles'}}</h2>
+      <p class="text-lg text-gray-600">Os artigos mais importantes e acessados</p>
+    </div>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      {{#each promoted_articles}}
+        <article class="group bg-white rounded-xl border border-gray-200 p-6 hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
+          <a href="{{url}}" class="block">
+            <div class="flex items-start justify-between mb-4">
+              <div class="w-10 h-10 bg-yellow-100 rounded-xl flex items-center justify-center">
+                <svg class="w-5 h-5 text-yellow-600" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                </svg>
+              </div>
+              {{#if internal}}
+                <div class="bg-gray-100 p-1.5 rounded-lg">
+                  <svg class="w-4 h-4 text-gray-500" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"></path>
+                  </svg>
+                </div>
+              {{/if}}
+            </div>
+            <h3 class="text-lg font-semibold text-gray-900 group-hover:text-blue-600 transition-colors leading-tight mb-3">{{title}}</h3>
+            <div class="flex items-center text-blue-600 font-medium opacity-0 group-hover:opacity-100 transition-opacity">
+              <span>Ler artigo</span>
+              <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+              </svg>
+            </div>
+          </a>
+        </article>
+      {{/each}}
+    </div>
+  </div>
+</section>
+{{/if}}
 
-      <div class="community-image"></div>
-    </section>
-  {{/if}}
+{{#if help_center.community_enabled}}
+<!-- Community CTA -->
+<section class="py-20 bg-gradient-to-r from-blue-600 to-indigo-700">
+  <div class="max-w-4xl mx-auto px-4 text-center text-white">
+    <div class="mb-8">
+      <h2 class="text-3xl md:text-4xl font-bold mb-4">Faça parte da nossa comunidade</h2>
+      <p class="text-xl text-blue-100 max-w-2xl mx-auto leading-relaxed">
+        Conecte-se com milhares de usuários, compartilhe experiências e encontre soluções colaborativas
+      </p>
+    </div>
+    
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-10 text-center">
+      <div>
+        <div class="text-2xl font-bold mb-2">5000+</div>
+        <div class="text-blue-200">Membros ativos</div>
+      </div>
+      <div>
+        <div class="text-2xl font-bold mb-2">500+</div>
+        <div class="text-blue-200">Discussões por mês</div>
+      </div>
+      <div>
+        <div class="text-2xl font-bold mb-2">95%</div>
+        <div class="text-blue-200">Problemas resolvidos</div>
+      </div>
+    </div>
+    
+    {{#link 'community' class='inline-flex items-center px-8 py-4 bg-white text-blue-600 rounded-xl hover:bg-blue-50 transition-all duration-300 font-semibold shadow-lg hover:shadow-xl hover:scale-105'}}
+      <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+      </svg>
+      {{t 'join_conversation'}}
+    {{/link}}
+  </div>
+</section>
+{{/if}}
 
-  <section class="section home-section activity">
-    {{#if settings.show_recent_activity}}
-      {{recent_activity}}
-    {{/if}}
-  </section>
-</div>
+{{#if settings.show_recent_activity}}
+<!-- Recent Activity -->
+<section class="py-20 bg-gray-50">
+  <div class="max-w-6xl mx-auto px-4">
+    <div class="text-center mb-16">
+      <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Atividade recente</h2>
+      <p class="text-lg text-gray-600">Acompanhe as últimas atualizações e discussões</p>
+    </div>
+    
+    <!-- Recent Activity Component -->
+    <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+      <div class="p-8">
+        {{recent_activity}}
+      </div>
+    </div>
+  </div>
+</section>
+{{/if}}

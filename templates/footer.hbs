@@ -1,25 +1,32 @@
-<footer class="footer">
-  <div class="footer-inner">
-    {{#link 'help_center'}}{{help_center.name}}{{/link}}
+<footer class="bg-white border-t border-gray-200 mt-16">
+  <div class="max-w-6xl mx-auto px-4 py-8">
+    <div class="flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0">
+      
+      <div class="text-gray-600">
+        {{#link 'help_center' class="hover:text-blue-600 transition-colors"}}{{help_center.name}}{{/link}}
+      </div>
 
-    <div class="footer-language-selector">
       {{#if alternative_locales}}
-        <div class="dropdown language-selector">
-          <button class="dropdown-toggle" aria-haspopup="true">
-            {{current_locale.name}}
-            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" focusable="false" viewBox="0 0 12 12" class="dropdown-chevron-icon">
-              <path fill="none" stroke="currentColor" stroke-linecap="round" d="M3 4.5l2.6 2.6c.2.2.5.2.7 0L9 4.5"/>
+        <div class="relative dropdown">
+          <button class="dropdown-toggle flex items-center space-x-2 px-3 py-2 text-gray-600 hover:text-gray-900 bg-white border border-gray-300 rounded-md transition-colors" aria-haspopup="true" aria-expanded="false">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"></path>
+            </svg>
+            <span class="text-sm">{{current_locale.name}}</span>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
             </svg>
           </button>
-          <span class="dropdown-menu dropdown-menu-end" role="menu">
+          <div class="dropdown-menu absolute bottom-full right-0 mb-2 w-40 bg-white rounded-md shadow-lg border border-gray-200 py-1" role="menu">
             {{#each alternative_locales}}
-              <a href="{{url}}" dir="{{direction}}" rel="nofollow" role="menuitem">
+              <a href="{{url}}" dir="{{direction}}" rel="nofollow" role="menuitem" class="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-50">
                 {{name}}
               </a>
             {{/each}}
-          </span>
+          </div>
         </div>
       {{/if}}
+      
     </div>
   </div>
 </footer>
